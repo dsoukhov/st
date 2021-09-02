@@ -847,6 +847,7 @@ externalpipe(const Arg *arg)
 		die("fork failed: %s\n", strerror(errno));
 		break;
 	case 0:
+    setenv("PARENTTERM", getenv("WINDOWID"), 1);
 		if (iofd != -1 && iofd != 1)
 			close(iofd);
 		close(cmdfd);

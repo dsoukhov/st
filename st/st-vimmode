@@ -1,0 +1,13 @@
+#!/bin/sh
+
+tmpfile=$(mktemp /tmp/st-cmd-output.XXXXXX)
+trap 'rm "$tmpfile"' 0 1 15
+cat >"$tmpfile"
+dwmswallow "$PARENTTERM" -c st-vimmode
+while getopts "vwl" o; do case "${o}" in
+	v) st -c "st-vimmode" -e nvim -c "normal G \$" "$tmpfile" -M ;;
+	w) st -c "st-vimmode" -e nvim -c "normal G" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
+	s) st -c "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_patterns()" "$tmpfile" -M ;;
+	l) st -c "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_lines()" "$tmpfile" -M ;;
+	*) exit ;;
+esac done

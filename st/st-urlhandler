@@ -1,0 +1,29 @@
+#!/bin/bash
+
+urlregex="(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$\#=_~-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)"
+
+urls="$(sed 's/.*│//g' | # First remove mutt sidebars:
+  grep -aEo "$urlregex" | # grep only urls as defined above.
+  uniq | # Ignore neighboring duplicates.
+  sed "s/\(\.\|,\|;\|\!\\|\?\)$//;
+  s/^www./http:\/\/www\./")" # xdg-open will not detect url without http
+
+[ -z "$urls" ] && exit 1
+
+while getopts "oc" o; do case "${o}" in
+  o)
+    if [ "$(wc -w <<< "$urls")" -gt 1 ]; then
+      chosen="$(echo "$urls" | dmenu -i -p 'Follow which url?' -l 10)"
+    else
+      chosen=$urls
+    fi
+    setsid xdg-open "$chosen" >/dev/null 2>&1 & ;;
+  c)
+    if [ "$(wc -w <<< "$urls")" -gt 1 ]; then
+      chosen="$(echo "$urls" | dmenu -i -p 'Copy which url?' -l 10)"
+    else
+      chosen=$urls
+    fi
+    tr -d '\n' <<< "$chosen"| xclip -selection clipboard ;;
+  *) printf "Invalid option: -%s\\n" "$OPTARG" && exit 1 ;;
+esac done
