@@ -6,6 +6,8 @@
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
 static char *font = "Monospace:size=12";
+static char *font2[] = { "Noto Color Emoji:style=Regular:size=12:pixelsize=12" };
+
 static int borderpx = 0;
 
 /*
@@ -176,7 +178,7 @@ static uint forcemousemod = ShiftMask;
  */
 ResourcePref resources[] = {
     { "font",         STRING,  &font },
-    //{ "fontalt0",     STRING,  &font2[0] },
+    { "font2",        STRING,  &font2 },
     { "color0",       STRING,  &colorname[0] },
     { "color1",       STRING,  &colorname[1] },
     { "color2",       STRING,  &colorname[2] },
