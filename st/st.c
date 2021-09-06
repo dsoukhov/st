@@ -836,6 +836,7 @@ externalpipe(const Arg *arg)
 	char str[(term.col + 1) * UTF_SIZ];
 	char *ptr;
 	void (*psigpipe)(int);
+  char dim[20];
 	const Glyph *gp, *last;
 	const ExternalPipe *ep = arg->v;
 
