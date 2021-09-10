@@ -60,6 +60,19 @@ enum selection_snap {
 	SNAP_LINE = 2
 };
 
+enum drawing_mode {
+    DRAW_NONE = 0,
+    DRAW_BG = 1 << 0,
+    DRAW_FG = 1 << 1,
+};
+
+/* Xresources preferences */
+enum resource_type {
+	STRING = 0,
+	INTEGER = 1,
+	FLOAT = 2
+};
+
 typedef unsigned char uchar;
 typedef unsigned int uint;
 typedef unsigned long ulong;
