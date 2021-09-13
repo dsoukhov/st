@@ -1602,81 +1602,93 @@ xdrawglyph(Glyph g, int x, int y)
 }
 
 void
-xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og)
+xdrawcursor(int cx, int cy, Glyph g, int ox, int oy, Glyph og, Line line, int len)
 {
-	Color drawcol;
+  Color drawcol;
 
-	/* remove the old cursor */
-	if (selected(ox, oy))
-		og.mode |= ATTR_SELECTED;
-	xdrawglyph(og, ox, oy);
+  /* remove the old cursor */
+  if (selected(ox, oy))
+    og.mode ^= ATTR_REVERSE;
 
-	if (IS_SET(MODE_HIDE))
-		return;
+  /* Redraw the line where cursor was previously.
+   * It will restore the ligatures broken by the cursor. */
+  xdrawline(line, 0, oy, len);
 
-	/*
-	 * Select the right color for the right mode.
-	 */
-	g.mode &= ATTR_BOLD|ATTR_ITALIC|ATTR_UNDERLINE|ATTR_STRUCK|ATTR_WIDE|ATTR_BOXDRAW;
+  if (IS_SET(MODE_HIDE))
+    return;
 
-	if (IS_SET(MODE_REVERSE)) {
-		g.mode |= ATTR_REVERSE;
-		g.fg = defaultcs;
-		g.bg = defaultfg;
-		drawcol = dc.col[defaultrcs];
-	} else {
-		g.fg = defaultbg;
-		g.bg = defaultcs;
-		drawcol = dc.col[defaultcs];
-	}
+  /*
+   * Select the right color for the right mode.
+   */
+  g.mode &= ATTR_BOLD|ATTR_ITALIC|ATTR_UNDERLINE|ATTR_STRUCK|ATTR_WIDE|ATTR_BOXDRAW;
 
-	/* draw the new one */
-	if (IS_SET(MODE_FOCUSED)) {
-		switch (win.cursor) {
-		case 7: /* st extension */
-			g.u = 0x2603; /* snowman (U+2603) */
-			/* FALLTHROUGH */
-		case 0: /* Blinking Block */
-		case 1: /* Blinking Block (Default) */
-		case 2: /* Steady Block */
-			xdrawglyph(g, cx, cy);
-			break;
-		case 3: /* Blinking Underline */
-		case 4: /* Steady Underline */
-			XftDrawRect(xw.draw, &drawcol,
-					borderpx + cx * win.cw,
-					borderpx + (cy + 1) * win.ch - \
-						cursorthickness,
-					win.cw, cursorthickness);
-			break;
-		case 5: /* Blinking bar */
-		case 6: /* Steady bar */
-			XftDrawRect(xw.draw, &drawcol,
-					borderpx + cx * win.cw,
-					borderpx + cy * win.ch,
-					cursorthickness, win.ch);
-			break;
-		}
-	} else {
-		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + cy * win.ch,
-				win.cw - 1, 1);
-		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + cy * win.ch,
-				1, win.ch - 1);
-		XftDrawRect(xw.draw, &drawcol,
-				borderpx + (cx + 1) * win.cw - 1,
-				borderpx + cy * win.ch,
-				1, win.ch - 1);
-		XftDrawRect(xw.draw, &drawcol,
-				borderpx + cx * win.cw,
-				borderpx + (cy + 1) * win.ch - 1,
-				win.cw, 1);
-	}
+  if (IS_SET(MODE_REVERSE)) {
+    g.mode |= ATTR_REVERSE;
+    g.bg = defaultfg;
+    if (selected(cx, cy)) {
+      drawcol = dc.col[defaultcs];
+      g.fg = defaultrcs;
+    } else {
+      drawcol = dc.col[defaultrcs];
+      g.fg = defaultcs;
+    }
+  } else {
+    if (selected(cx, cy)) {
+      g.fg = defaultfg;
+      g.bg = defaultrcs;
+    } else {
+      g.fg = defaultbg;
+      g.bg = defaultcs;
+    }
+    drawcol = dc.col[g.bg];
+  }
+
+  /* draw the new one */
+  if (IS_SET(MODE_FOCUSED)) {
+    switch (win.cursor) {
+    case 7: /* st extension */
+      g.u = 0x2603; /* snowman (U+2603) */
+      /* FALLTHROUGH */
+    case 0: /* Blinking Block */
+    case 1: /* Blinking Block (Default) */
+    case 2: /* Steady Block */
+      xdrawglyph(g, cx, cy);
+      break;
+    case 3: /* Blinking Underline */
+    case 4: /* Steady Underline */
+      XftDrawRect(xw.draw, &drawcol,
+          borderpx + cx * win.cw,
+          borderpx + (cy + 1) * win.ch - \
+            cursorthickness,
+          win.cw, cursorthickness);
+      break;
+    case 5: /* Blinking bar */
+    case 6: /* Steady bar */
+      XftDrawRect(xw.draw, &drawcol,
+          borderpx + cx * win.cw,
+          borderpx + cy * win.ch,
+          cursorthickness, win.ch);
+      break;
+    }
+  } else {
+    XftDrawRect(xw.draw, &drawcol,
+        borderpx + cx * win.cw,
+        borderpx + cy * win.ch,
+        win.cw - 1, 1);
+    XftDrawRect(xw.draw, &drawcol,
+        borderpx + cx * win.cw,
+        borderpx + cy * win.ch,
+        1, win.ch - 1);
+    XftDrawRect(xw.draw, &drawcol,
+        borderpx + (cx + 1) * win.cw - 1,
+        borderpx + cy * win.ch,
+        1, win.ch - 1);
+    XftDrawRect(xw.draw, &drawcol,
+        borderpx + cx * win.cw,
+        borderpx + (cy + 1) * win.ch - 1,
+        win.cw, 1);
+  }
 }
-
 void
 xsetenv(void)
 {
