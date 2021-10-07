@@ -28,7 +28,6 @@
  #include <libutil.h>
 #endif
 
-#define DOUBLEFORKNEWTERM		1
 /* command to execute on right clicking selection */
 #define PLUMBER(selstr)			((char *const[]){ "st-plumber", selstr, NULL })
 
@@ -2375,39 +2374,6 @@ setpwd(void)
 		return;
 	}
 	setenv("PWD", pwd, 1);
-}
-
-void
-newterm(const Arg *arg)
-{
-	switch (fork()) {
-	case -1:
-		die("fork failed: %s\n", strerror(errno));
-		break;
-	case 0:
-		if (iofd != -1 && iofd != 1)
-			close(iofd);
-		close(cmdfd);
-#if DOUBLEFORKNEWTERM
-		switch (fork()) {
-		case -1:
-			die("fork failed: %s\n", strerror(errno));
-			break;
-		case 0:
-#endif
-		setsid();
-		setpwd();
-		execlp("st", "st", (char *)NULL);
-		fprintf(stderr, "execlp st failed: %s\n", strerror(errno));
-		_exit(1);
-		break;
-#if DOUBLEFORKNEWTERM
-		default:
-			exit(0);
-		}
-#endif
-		break;
-	}
 }
 
 void
