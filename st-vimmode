@@ -6,9 +6,9 @@ cat >"$tmpfile"
 dwmswallow "$PARENTTERM" -c st-vimmode
 while getopts "vwsl" o; do case "${o}" in
 	#v) st -w "$PARENTTERM" -g "$PARENTDIM" -e nvim -c "normal G \$" "$tmpfile" -M ;;
-	v) st -c "st-vimmode" -e nvim -c "normal G \$" "$tmpfile" -M ;;
-	w) st -c "st-vimmode" -e nvim -c "normal G" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
-	s) st -c "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_patterns()" "$tmpfile" -M ;;
-	l) st -c "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_lines()" "$tmpfile" -M ;;
+	v) st -e nvim -c "normal G \$" "$tmpfile" -M ;;
+	w) st -e nvim -c "normal G" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
+	s) st -e nvim -c "normal G \$" -c "lua require'hop'.hint_patterns()" "$tmpfile" -M ;;
+	l) st -e nvim -c "normal G \$" -c "lua require'hop'.hint_lines()" "$tmpfile" -M ;;
 	*) exit ;;
 esac done
