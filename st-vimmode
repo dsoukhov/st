@@ -3,11 +3,10 @@
 tmpfile=$(mktemp /tmp/st-cmd-output.XXXXXX)
 trap 'rm "$tmpfile"' 0 1 15
 cat >"$tmpfile"
-dwmswallow "$PARENTTERM" -c st-vimmode
 while getopts "vwsl" o; do case "${o}" in
-	#v) st -w "$PARENTTERM" -g "$PARENTDIM" -e nvim -c "normal G \$" "$tmpfile" -M ;;
 	v) st -e nvim -c "normal G \$" "$tmpfile" -M ;;
-	w) st -e nvim -c "normal G" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
+  #TODO: FIX THESE
+	w) st -e nvim -c "normal G \$" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
 	s) st -e nvim -c "normal G \$" -c "lua require'hop'.hint_patterns()" "$tmpfile" -M ;;
 	l) st -e nvim -c "normal G \$" -c "lua require'hop'.hint_lines()" "$tmpfile" -M ;;
 	*) exit ;;

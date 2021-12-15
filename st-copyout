@@ -10,26 +10,26 @@ firstword_curline="$(grep "\S" "$tmpfile" | tail -n 1 | sed 's/^\s*//' | cut -d'
 ps1="$(printf '%q.*%q' "$ps1start" "$ps1end")"
 #remove escape chars from > (sed doesnt esc > but bash does)
 ps1="$(sed 's/\\>/>/g' <<<"$ps1")"
-[[ "$firstword_curline" =~ ^\>{1,5} ]] && ISREPL=true ps1=$firstword_curline
+[[ "$firstword_curline" =~ ^\>{1,5} ]] && ps1=$firstword_curline
 nonemptycmds="$(sed -r "s/^$ps1\ $//g" "$tmpfile")"
 outputs="$(awk "/^$ps1/"'{print NR":"$0}' <<<"$nonemptycmds")"
 while getopts "ocy" o; do case "${o}" in
-	o)
-		chosen="$(tac <<<"$outputs" | dmenu -p "Copy which command's output?" -i -l 10)"
-		selline="$(awk -F[':'] '{print $1}' <<<"$chosen")"
-		pattern='/^'$ps1'.*$/,/^'$ps1.*$/'{//!p}'
-		out=$(sed -n "$pattern" <<<"$(tail -n+"$selline" "$tmpfile")")
-		xclip -selection clipboard <<<"$out"
-		;;
-	c)
-		chosen="$(tac <<<"$outputs" | dmenu -p "Copy which command?" -i -l 10)"
-		tocopy="$(awk -F[':'] '{print $2}' <<<"$chosen")"
-		sed -r "s/$ps1\ //g" <<<"$tocopy" | tr -d '\n' | xclip -selection clipboard
-		;;
-	y)
-		chosen="$(tail -n 1 <<<"$outputs")"
-		tocopy="$(awk -F[':'] '{print $2}' <<<"$chosen")"
-		sed -r "s/$ps1\ //g" <<<"$tocopy" | tr -d '\n' | xclip -selection clipboard
-		;;
-	*) exit 1 ;;
-	esac done
+  o)
+    chosen="$(tac <<<"$outputs" | dmenu -p "Copy which command's output?" -i -l 10)"
+    selline="$(awk -F[':'] '{print $1}' <<<"$chosen")"
+    pattern='/^'$ps1'.*$/,/^'$ps1.*$/'{//!p}'
+    out=$(sed -n "$pattern" <<<"$(tail -n+"$selline" "$tmpfile")")
+    xclip -selection clipboard <<<"$out"
+    ;;
+  c)
+    chosen="$(tac <<<"$outputs" | dmenu -p "Copy which command?" -i -l 10)"
+    tocopy="$(grep -Po '(\d+:)\K(.*)' <<< "$chosen")"
+    sed -r "s/$ps1\ //g" <<<"$tocopy" | tr -d '\n' | xclip -selection clipboard
+    ;;
+  y)
+    chosen="$(tail -n 1 <<<"$outputs")"
+    tocopy="$(grep -Po '(\d+:)\K(.*)' <<< "$chosen")"
+    sed -r "s/$ps1\ //g" <<<"$tocopy" | tr -d '\n' | xclip -selection clipboard
+    ;;
+  *) exit 1 ;;
+  esac done
