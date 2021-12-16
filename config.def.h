@@ -86,7 +86,7 @@ const int boxdraw_braille = 0;
 static int bellvolume = 0;
 
 /* default TERM value */
-char *termname = "st-256color";
+char *termname = "st";
 
 /* default class and name hints */
 static char *defaultclass = "st";
@@ -277,10 +277,10 @@ static Shortcut shortcuts[] = {
   { MODKEY,               XK_o,           externalpipe,   {.v = &copyoutput} },
   { MODKEY,               XK_y,           externalpipe,   {.v = &copycurcmd} },
   { MODKEY,               XK_bracketleft, externalpipe,   {.v = &vimmodecmd } },
-  { MODKEY,               XK_f,           externalpipe,   {.v = &vimfindwrdcmd } },
-  { MODKEY,               XK_slash,       externalpipe,   {.v = &vimsercmd } },
+  //{ MODKEY,               XK_f,           externalpipe,   {.v = &vimfindwrdcmd } },
+  //{ MODKEY,               XK_slash,       externalpipe,   {.v = &vimsercmd } },
   { MODKEY,               XK_p,           externalpipe,   {.v = &plumbcmd} },
-  { MODKEY,               XK_apostrophe,  externalpipe,   {.v = &vimlinecmd } },
+  //{ MODKEY,               XK_apostrophe,  externalpipe,   {.v = &vimlinecmd } },
   { MODKEY,               XK_bracketright,clippaste,      {.i =  0} },
 };
 
