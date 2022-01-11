@@ -1,9 +1,18 @@
-#!/bin/bash -i
+#!/bin/bash
 tmpfile=$(mktemp /tmp/st-cmd-output.XXXXXX)
 trap 'rm "$tmpfile"' 0 1 15
 sed -n "w $tmpfile"
 sed -i 's/\x0//g' "$tmpfile"
-ps1nonesc="$(printf '%s' "${PS1@P}")"
+#check default shell in passwd
+shell="$(awk -F: -v user="$USER" '$1 == user {print $NF}' /etc/passwd)"
+if [[ "$shell" == "/usr/bin/zsh" ]]; then
+  ps1nonesc="$(/usr/bin/zsh -i -c 'print -P $PROMPT')"
+else
+  #assume bash
+  ps1nonesc="$(bash -i -c 'printf '%s' "${PS1@P}"')"
+fi
+#remove color codes
+ps1nonesc="$(sed -r "s/\x1B\[(([0-9]{1,2})?(;)?([0-9]{1,2})?)?[m,K,H,f,J]//g" <<< "$ps1nonesc")"
 ps1start="${ps1nonesc:0:1}"
 ps1end="${ps1nonesc:${#ps1nonesc}-3:2}"
 firstword_curline="$(grep "\S" "$tmpfile" | tail -n 1 | sed 's/^\s*//' | cut -d' ' -f1)"
