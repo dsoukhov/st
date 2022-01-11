@@ -1,13 +1,20 @@
-#!/bin/sh
+#!/bin/bash
+
+parent="$(pgrep -lP $PPID | awk 'FNR == 1 {print $2}')"
+
+case $parent in
+  nvim|vim|vi|"$EDITOR")
+    exit ;;
+esac
 
 tmpfile=$(mktemp /tmp/st-cmd-output.XXXXXX)
 trap 'rm "$tmpfile"' 0 1 15
 cat >"$tmpfile"
 while getopts "vwsl" o; do case "${o}" in
-	v) st -t "st-vimmode" -e nvim -u ~/.config/nvim/init_st_vimmode.vim -c "normal G \$" "$tmpfile" -M ;;
+  v) st -t "st-vimmode" -e nvim -u ~/.config/nvim/init_st_vimmode.vim -c "normal G \$" "$tmpfile" -M ;;
   #TODO: FIX THESE
-	w) st -t "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
-	s) st -t "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_patterns()" "$tmpfile" -M ;;
-	l) st -t "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_lines()" "$tmpfile" -M ;;
-	*) exit ;;
+  w) st -t "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
+  s) st -t "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_patterns()" "$tmpfile" -M ;;
+  l) st -t "st-vimmode" -e nvim -c "normal G \$" -c "lua require'hop'.hint_lines()" "$tmpfile" -M ;;
+  *) exit ;;
 esac done
