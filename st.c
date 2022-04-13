@@ -847,9 +847,9 @@ externalpipe(const Arg *arg)
     die("fork failed: %s\n", strerror(errno));
     break;
   case 0:
-    sprintf(dim, "%dx%d", term.col, term.row);
-    setenv("PARENTDIM", dim, 1);
-    setenv("PARENTTERM", getenv("WINDOWID"), 1);
+    /* sprintf(dim, "%dx%d", term.col, term.row); */
+    /* setenv("PARENTDIM", dim, 1); */
+    /* setenv("PARENTTERM", getenv("WINDOWID"), 1); */
     if (iofd != -1 && iofd != 1)
       close(iofd);
     close(cmdfd);
@@ -2861,6 +2861,10 @@ check_control_code:
   if (width == 2) {
     gp->mode |= ATTR_WIDE;
     if (term.c.x+1 < term.col) {
+      if (gp[1].mode == ATTR_WIDE && term.c.x+2 < term.col) {
+        gp[2].u = ' ';
+        gp[2].mode &= ~ATTR_WDUMMY;
+      }
       gp[1].u = '\0';
       gp[1].mode = ATTR_WDUMMY;
     }
