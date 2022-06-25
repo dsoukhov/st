@@ -835,7 +835,6 @@ externalpipe(const Arg *arg)
   char str[(term.col + 1) * UTF_SIZ];
   char *ptr;
   void (*psigpipe)(int);
-  char dim[20];
   const Glyph *gp, *last;
   const ExternalPipe *ep = arg->v;
 
@@ -847,9 +846,6 @@ externalpipe(const Arg *arg)
     die("fork failed: %s\n", strerror(errno));
     break;
   case 0:
-    /* sprintf(dim, "%dx%d", term.col, term.row); */
-    /* setenv("PARENTDIM", dim, 1); */
-    /* setenv("PARENTTERM", getenv("WINDOWID"), 1); */
     if (iofd != -1 && iofd != 1)
       close(iofd);
     close(cmdfd);
@@ -2738,7 +2734,7 @@ tputc(Rune u)
 {
   char c[UTF_SIZ];
   int control;
-  int width, len;
+  int width = 0, len;
   Glyph *gp;
 
   control = ISCONTROL(u);
