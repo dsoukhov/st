@@ -163,6 +163,6 @@ extern int allowwindowops;
 extern int resettitleonris;
 extern char *termname;
 extern unsigned int tabspaces;
-extern unsigned int defaultfg;
-extern unsigned int defaultbg;
+extern const unsigned int defaultfg;
+extern const unsigned int defaultbg;
 extern const int boxdraw, boxdraw_bold, boxdraw_braille;
