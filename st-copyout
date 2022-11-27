@@ -11,8 +11,10 @@ else
   #assume bash
   ps1nonesc="$(bash -i -c 'printf '%s' "${PS1@P}"')"
 fi
-#remove color codes
-ps1nonesc="$(sed -r "s/\x1B\[(([0-9]{1,2})?(;)?([0-9]{1,2})?)?[m,K,H,f,J]//g" <<< "$ps1nonesc")"
+#remove term codes + colors
+ps1nonesc="$(sed 's/\x1B\[[0-9;]*[JKmsu]//g' <<< "$ps1nonesc")"
+#remove vim term codes (used during vim mode in shell)
+ps1nonesc="$(sed 's/\x1B\[[0-9]*\s[q]//g' <<< $ps1nonesc)"
 ps1start="${ps1nonesc:0:1}"
 ps1end="${ps1nonesc:${#ps1nonesc}-3:2}"
 firstword_curline="$(grep "\S" "$tmpfile" | tail -n 1 | sed 's/^\s*//' | cut -d' ' -f1)"
