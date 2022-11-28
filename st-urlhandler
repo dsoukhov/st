@@ -13,14 +13,14 @@ urls="$(sed 's/.*│//g' | # First remove mutt sidebars:
 while getopts "oc" o; do case "${o}" in
   o)
     if [ "$(wc -w <<< "$urls")" -gt 1 ]; then
-      chosen="$(echo "$urls" | dmenu -i -p 'Follow which url?' -l 10)"
+      chosen="$(dmenu -p 'Follow which url?' -l 10 <<< "$urls")"
     else
       chosen=$urls
     fi
     setsid xdg-open "$chosen" >/dev/null 2>&1 & ;;
   c)
     if [ "$(wc -w <<< "$urls")" -gt 1 ]; then
-      chosen="$(echo "$urls" | dmenu -i -p 'Copy which url?' -l 10)"
+      chosen="$(dmenu -p 'Copy which url?' -l 10 <<< "$urls")"
     else
       chosen=$urls
     fi
