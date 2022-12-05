@@ -6,6 +6,7 @@ VERSION = 0.8.4
 # paths
 PREFIX = /usr/local
 MANPREFIX = $(PREFIX)/share/man
+APPPREFIX = $(PREFIX)/share/applications
 
 X11INC = /usr/include/X11
 X11LIB = /usr/lib/X11
