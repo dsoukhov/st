@@ -102,6 +102,7 @@ const char *s;
 
 typedef struct {
 const int histlines;
+const int getsel;
 char *const *cmd;
 } ExternalPipe;
 
@@ -130,7 +131,6 @@ void ttywrite(const char *, size_t, int);
 
 void resettitle(void);
 
-void plumb(int, int, char *);
 void selclear(void);
 void selinit(void);
 void selstart(int, int, int);

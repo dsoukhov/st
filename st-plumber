@@ -1,13 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 # requires https://metacpan.org/pod/Regexp::Common::URI
 open() {
-    echo "$1" | xsel -ib
-    exec setsid -f xdg-open "$1"
+  setsid xdg-open "$1" >/dev/null 2>&1 &
 }
+urlregex="(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$\#=_~-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)"
 
-[ -f "$1" ] && open "$1"
+url="$(sed 's/.*│//g' <<< "$1"| # First remove mutt sidebars:
+  grep -aEo "$urlregex" | # grep only urls as defined above.
+  uniq | # Ignore neighboring duplicates.
+  sed "s/\(\.\|,\|;\|\!\\|\?\)$//;
+  s/^www./http:\/\/www\./")" # xdg-open will not detect url without http
 
-url="$(echo "$1" | perl -M'Regexp::Common=URI' -ne 'if (/($RE{URI})/) {print $1; exit}')"
-[ -n "$url" ] && open "$url"
+[ -z $url ] && ( [[ -n $1 ]] && open "$2/$1") || open "$url"
 
-notify-send -t 2000 -u critical st-plumber "Selection is not a valid file or url!"
+# notify-send -t 2000 -u critical st-plumber "Selection is not a valid file or url!"

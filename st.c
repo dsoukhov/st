@@ -28,9 +28,6 @@
  #include <libutil.h>
 #endif
 
-/* command to execute on right clicking selection */
-#define PLUMBER(selstr)			((char *const[]){ "st-plumber", selstr, NULL })
-
 /* Arbitrary sizes */
 #define UTF_INVALID   0xFFFD
 #define UTF_SIZ       4
@@ -250,7 +247,6 @@ static void tstrsequence(uchar);
 static void drawregion(int, int, int, int);
 
 static void savepwd(const char *);
-static void setpwd(void);
 
 static void selnormalize(void);
 static void selmove(int);
@@ -805,33 +801,10 @@ execsh(char *cmd, char **args)
 }
 
 void
-plumb(int x, int y, char *selstr)
-{
-  if (sel.mode != SEL_IDLE || !selected(x, y))
-    return;
-
-  switch (fork()) {
-  case -1:
-    die("fork failed: %s\n", strerror(errno));
-    break;
-  case 0:
-    if (iofd != -1 && iofd != 1)
-      close(iofd);
-    close(cmdfd);
-    setsid();
-    setpwd();
-    execvp(PLUMBER(selstr)[0], PLUMBER(selstr));
-    fprintf(stderr, "execvp plumber failed: %s\n", strerror(errno));
-    _exit(1);
-    break;
-  }
-}
-
-void
 externalpipe(const Arg *arg)
 {
   int fd[2];
-  int y, m;
+  int y, m, i;
   char str[(term.col + 1) * UTF_SIZ];
   char *ptr;
   void (*psigpipe)(int);
@@ -856,7 +829,17 @@ externalpipe(const Arg *arg)
         die("dup2 failed: %s\n", strerror(errno));
     }
     close(fd[0]);
-    execvp(ep->cmd[0], ep->cmd);
+    if (ep->getsel) {
+      char** arg = malloc(sizeof(char*));
+      for (i = 0; ep->cmd[i] != NULL; i++)
+        arg[i] = ep->cmd[i];
+      arg[i] = getsel();
+      arg[i+1] = pwd;
+      arg[i+2] = NULL;
+      execvp(ep->cmd[0], arg);
+    } else {
+      execvp(ep->cmd[0], ep->cmd);
+    }
     fprintf(stderr, "execvp %s failed: %s\n", ep->cmd[0],
         strerror(errno));
     _exit(1);
@@ -2358,19 +2341,6 @@ savepwd(const char *s)
 {
   free(pwd);
   pwd = xstrdup(s);
-}
-
-void
-setpwd(void)
-{
-  if (!pwd)
-    return;
-  if (chdir(pwd) == -1) {
-    fprintf(stderr, "Error changing directory to %s: %s\n",
-        pwd, strerror(errno));
-    return;
-  }
-  setenv("PWD", pwd, 1);
 }
 
 void

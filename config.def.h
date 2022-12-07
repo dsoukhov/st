@@ -222,6 +222,17 @@ ResourcePref resources[] = {
   { "chscale",      FLOAT,   &chscale },
 };
 
+static ExternalPipe copycurcmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){  "/bin/sh", "-c", "st-copyout -y", NULL } };
+static ExternalPipe copyoutput = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "/bin/sh", "-c", "st-copyout -o", NULL } };
+static ExternalPipe copycmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){  "/bin/sh", "-c", "st-copyout -c", NULL } };
+static ExternalPipe openurlcmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "/bin/sh", "-c", "st-urlhandler -o", NULL } };
+static ExternalPipe copyurlcmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "/bin/sh", "-c", "st-urlhandler -c", NULL } };
+static ExternalPipe vimmodecmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-v", NULL } };
+static ExternalPipe vimfindwrdcmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-w", NULL } };
+static ExternalPipe vimsercmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-s", NULL } };
+static ExternalPipe vimlinecmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-l", NULL } };
+static ExternalPipe plumbcmd = { .histlines = -1, .getsel = 1, .cmd = (char *const[]){ "st-plumber", NULL } };
+
 /*
  * Internal mouse shortcuts.
  * Beware that overloading Button1 will disable the selection.
@@ -229,30 +240,20 @@ ResourcePref resources[] = {
  * only when altscreen is not active.
  */
 static MouseShortcut mshortcuts[] = {
-  /* mask                 button   function        argument       release altscreen */
-  { XK_ANY_MOD,           Button4, kscrollup,      {.i = 1},      0,      -1 },
-  { XK_ANY_MOD,           Button5, kscrolldown,    {.i = 1},      0,      -1 },
-  { XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
-  { ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
-  { XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
-  { ShiftMask,            Button5, ttysend,        {.s = "\033[6;2~"} },
-  { XK_ANY_MOD,           Button5, ttysend,        {.s = "\005"} },
+  /* mask                 button   function     argument             release */
+  { XK_ANY_MOD,           Button4, kscrollup,   {.i = 1},            0},
+  { XK_ANY_MOD,           Button5, kscrolldown, {.i = 1},            0},
+  { XK_ANY_MOD,           Button2, selpaste,    {.i = 0},            1},
+  { XK_ANY_MOD,           Button3, externalpipe,{.v = &plumbcmd},    1},
+  { ShiftMask,            Button4, ttysend,     {.s = "\033[5;2~"} },
+  { XK_ANY_MOD,           Button4, ttysend,     {.s = "\031"} },
+  { ShiftMask,            Button5, ttysend,     {.s = "\033[6;2~"} },
+  { XK_ANY_MOD,           Button5, ttysend,     {.s = "\005"} },
 };
 
 /* Internal keyboard shortcuts. */
 #define MODKEY Mod1Mask
 #define TERMMOD (MODKEY|ShiftMask)
-
-static ExternalPipe copycurcmd = { .histlines = -1, .cmd = (char *const[]){  "/bin/sh", "-c", "st-copyout -y", NULL } };
-static ExternalPipe copyoutput = { .histlines = -1, .cmd = (char *const[]){ "/bin/sh", "-c", "st-copyout -o", NULL } };
-static ExternalPipe copycmd = { .histlines = -1, .cmd = (char *const[]){  "/bin/sh", "-c", "st-copyout -c", NULL } };
-static ExternalPipe openurlcmd = { .histlines = -1, .cmd = (char *const[]){ "/bin/sh", "-c", "st-urlhandler -o", NULL } };
-static ExternalPipe copyurlcmd = { .histlines = -1, .cmd = (char *const[]){ "/bin/sh", "-c", "st-urlhandler -c", NULL } };
-static ExternalPipe vimmodecmd = { .histlines = -1, .cmd = (char *const[]){ "st-vimmode", "-v", NULL } };
-static ExternalPipe vimfindwrdcmd = { .histlines = -1, .cmd = (char *const[]){ "st-vimmode", "-w", NULL } };
-static ExternalPipe vimsercmd = { .histlines = -1, .cmd = (char *const[]){ "st-vimmode", "-s", NULL } };
-static ExternalPipe vimlinecmd = { .histlines = -1, .cmd = (char *const[]){ "st-vimmode", "-l", NULL } };
-static ExternalPipe plumbcmd = { .histlines = -1, .cmd = (char *const[]){ "st-plumber", NULL } };
 
 static Shortcut shortcuts[] = {
   /* mask                 keysym          function        argument */
