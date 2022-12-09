@@ -48,6 +48,8 @@ install: st
 	cp -f st-urlhandler $(DESTDIR)$(PREFIX)/bin
 	cp -f st-vimmode $(DESTDIR)$(PREFIX)/bin
 	cp -f st-plumber $(DESTDIR)$(PREFIX)/bin
+	cp -f st-vim.vim $(DESTDIR)$(PREFIX)
+	sed -i 's#\MK_PATH#$(DESTDIR)$(PREFIX)#g' $(DESTDIR)$(PREFIX)/bin/st-vimmode
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-copyout
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-urlhandler
@@ -63,6 +65,7 @@ install: st
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/st
+	rm -f $(DESTDIR)$(PREFIX)/st-vim.vim
 	rm -f $(DESTDIR)$(PREFIX)/bin/st-copyout
 	rm -f $(DESTDIR)$(PREFIX)/bin/st-urlhandler
 	rm -f $(destdir)$(prefix)/bin/st-vimmode

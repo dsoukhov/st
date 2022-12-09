@@ -814,6 +814,8 @@ externalpipe(const Arg *arg)
   if (pipe(fd) == -1)
     die("pipe failed: %s\n", strerror(errno));
 
+  setenv("PARENT_PWD", pwd, 1);
+
   switch (fork()) {
   case -1:
     die("fork failed: %s\n", strerror(errno));
@@ -834,8 +836,7 @@ externalpipe(const Arg *arg)
       for (i = 0; ep->cmd[i] != NULL; i++)
         arg[i] = ep->cmd[i];
       arg[i] = getsel();
-      arg[i+1] = pwd;
-      arg[i+2] = NULL;
+      arg[i+1] = NULL;
       execvp(ep->cmd[0], arg);
     } else {
       execvp(ep->cmd[0], ep->cmd);
