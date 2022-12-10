@@ -1,5 +1,4 @@
 #!/bin/bash
-# requires https://metacpan.org/pod/Regexp::Common::URI
 open() {
   setsid xdg-open "$1" >/dev/null 2>&1 &
 }
@@ -11,6 +10,4 @@ url="$(sed 's/.*│//g' <<< "$1"| # First remove mutt sidebars:
   sed "s/\(\.\|,\|;\|\!\\|\?\)$//;
   s/^www./http:\/\/www\./")" # xdg-open will not detect url without http
 
-[ -z $url ] && ( [[ -n $1 ]] && open "$2/$1") || open "$url"
-
-# notify-send -t 2000 -u critical st-plumber "Selection is not a valid file or url!"
+[ -z $url ] && ( [[ -n $1 ]] && open "$PARENT_PWD/$1") || open "$url"

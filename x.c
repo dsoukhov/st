@@ -177,6 +177,7 @@ static void xseturgency(int);
 static int evcol(XEvent *);
 static int evrow(XEvent *);
 
+static int iskeyblocked(Shortcut *);
 static void expose(XEvent *);
 static void visibility(XEvent *);
 static void unmap(XEvent *);
@@ -184,6 +185,7 @@ static void kpress(XEvent *);
 static void cmessage(XEvent *);
 static void resize(XEvent *);
 static void focus(XEvent *);
+static void parseundokeys(char *);
 static uint buttonmask(uint);
 static int mouseaction(XEvent *, uint);
 static void brelease(XEvent *);
@@ -262,6 +264,8 @@ static char *opt_io    = NULL;
 static char *opt_line  = NULL;
 static char *opt_name  = NULL;
 static char *opt_title = NULL;
+static char **opt_undokeys = NULL;
+
 
 static int oldbutton = 3; /* button event on startup: 3 = release */
 
@@ -304,6 +308,22 @@ void
 numlock(const Arg *dummy)
 {
   win.mode ^= MODE_NUMLOCK;
+}
+
+int
+iskeyblocked(Shortcut *kb)
+{
+  for (int i = 0; opt_undokeys[i] != NULL; i++) {
+    char undo[20];
+    strcpy(undo, opt_undokeys[i]);
+    char *mod = strtok(undo, "-");
+    char *keysym;
+    if (mod) {
+      keysym = strtok(NULL, mod);
+      return (keysym && atoi(mod) == (int)kb->mod && atoi(keysym) == (int)kb->keysym);
+    }
+  }
+  return 0;
 }
 
 void
@@ -506,6 +526,15 @@ bpress(XEvent *e)
 
     selstart(evcol(e), evrow(e), snap);
   }
+}
+
+void
+parseundokeys(char *u)
+{
+  int i;
+  for (i = 0; opt_undokeys[i] != NULL; i++);
+  opt_undokeys[i] = u;
+  opt_undokeys[i+1] = NULL;
 }
 
 void
@@ -1975,7 +2004,7 @@ kpress(XEvent *ev)
     len = XLookupString(e, buf, sizeof buf, &ksym, NULL);
   /* 1. shortcuts */
   for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
-    if (ksym == bp->keysym && match(bp->mod, e->state)) {
+    if (ksym == bp->keysym && match(bp->mod, e->state) && !iskeyblocked(bp)) {
       bp->func(&(bp->arg));
       return;
     }
@@ -2200,7 +2229,7 @@ usage(void)
       "       %s [-aiv] [-c class] [-f font] [-g geometry]"
       " [-n name] [-o file]\n"
       "          [-T title] [-t title] [-w windowid] -l line"
-      " [stty_args ...]\n", argv0, argv0);
+      " [stty_args ...]\n [-u mask-keysym]\n" , argv0, argv0);
 }
 
 int
@@ -2209,6 +2238,7 @@ main(int argc, char *argv[])
   xw.l = xw.t = 0;
   xw.isfixed = False;
   xsetcursor(cursorshape);
+  opt_undokeys = xmalloc(sizeof(char*));
 
   ARGBEGIN {
   case 'a':
@@ -2243,6 +2273,9 @@ main(int argc, char *argv[])
   case 't':
   case 'T':
     opt_title = EARGF(usage());
+    break;
+  case 'u':
+    parseundokeys(EARGF(usage()));
     break;
   case 'w':
     opt_embed = EARGF(usage());
