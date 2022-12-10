@@ -19,10 +19,11 @@ tmpfile=$(mktemp /tmp/st-cmd-output.XXXXXX)
 trap 'rm "$tmpfile"' 0 1 15
 cat >"$tmpfile"
 while getopts "vwsl" o; do case "${o}" in
-  #MK_PATH is set by makefile
-  v) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "sleep 5ms; normal G \$" "$tmpfile" -M ;;
-  w) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "sleep 5ms; normal G \$" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
-  s) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "sleep 5ms; normal G \$" -c "lua require'hop'.hint_patterns()" "$tmpfile" -M ;;
-  l) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "sleep 5ms; normal G \$" -c "lua require'hop'.hint_lines()" "$tmpfile" -M ;;
+  #MK_PATH is set by make
+  #v) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "normal G \$" "$tmpfile" -M ;;
+  v) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "normal G \$; sleep 2ms" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
+  w) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "normal G \$; sleep 2ms" -c "lua require'hop'.hint_words()" "$tmpfile" -M ;;
+  s) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "normal G \$; sleep 2ms" -c "lua require'hop'.hint_patterns()" "$tmpfile" -M ;;
+  l) st -u "8-112" -t "st-vimmode" -e nvim -u MK_PATH/st-vim.vim -c "normal G \$; sleep 2ms" -c "lua require'hop'.hint_lines()" "$tmpfile" -M ;;
   *) exit ;;
 esac done

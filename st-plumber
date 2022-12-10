@@ -1,13 +1,13 @@
 #!/bin/bash
 open() {
-  setsid xdg-open "$1" >/dev/null 2>&1 &
+  setsid xdg-open "$(sed 's/[[:blank:]]//g' <<< "$1")" >/dev/null 2>&1 &
 }
 urlregex="(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$\#=_~-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)"
 
-url="$(sed 's/.*│//g' <<< "$1"| # First remove mutt sidebars:
+url="$(sed 's/.*│//g' <<< "$PARENT_SEL"| # First remove mutt sidebars:
   grep -aEo "$urlregex" | # grep only urls as defined above.
   uniq | # Ignore neighboring duplicates.
   sed "s/\(\.\|,\|;\|\!\\|\?\)$//;
   s/^www./http:\/\/www\./")" # xdg-open will not detect url without http
 
-[ -z $url ] && ( [[ -n $1 ]] && open "$PARENT_PWD/$1") || open "$url"
+[ -z $url ] && ( [[ -n $PARENT_SEL ]] && open "$PARENT_PWD/$PARENT_SEL") || open "$url"

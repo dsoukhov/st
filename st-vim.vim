@@ -9,7 +9,7 @@ source $HOME/.config/nvim/base.vim
 source $HOME/.config/nvim/motion_cfg.vim
 source $HOME/.config/nvim/colorscheme.vim
 set laststatus=0
-set mouse=
+set iskeyword=@,48-57,_,-,.,192-255
 
 "taken from https://vi.stackexchange.com/questions/7149/mapping-a-command-in-visual-mode-results-in-error-e481-no-range-alllowed
 function Get_visual_selection()
@@ -19,5 +19,8 @@ function Get_visual_selection()
   return lines[0]
 endfunction
 
-vnoremap <M-p> "ay:<C-U>execute '! ~/.config/st/st-plumber '.shellescape(@", 1).' '.fnamemodify('.', ':p')<CR><CR>
-" vnoremap <M-p> "ay:<C-U>execute '! ~/.config/st/st-plumber '.shellescape(@", 1).' '.fnamemodify('.', ':p')<CR><CR>:q<CR>
+"MK_PATH set by make
+vnoremap <M-p> "ay:<C-U> execute '! PARENT_SEL='.shellescape(@a,1).' MK_PATH/st-plumber'<CR><CR>:q<CR>
+vnoremap <RightMouse> "ay:<C-U> execute '! PARENT_SEL='.shellescape(@a,1).' MK_PATH/st-plumber'<CR><CR>:q<CR>
+nnoremap <M-p> "ay:<C-U>execute '! PARENT_SEL='.shellescape(fnameescape(expand("<cWORD>"))).' MK_PATH/st-plumber'<CR><CR>:q<CR>
+nnoremap <RightMouse> "ay:<C-U>execute '! PARENT_SEL='.shellescape(fnameescape(expand("<cWORD>"))).' MK_PATH/st-plumber'<CR><CR>:q<CR>

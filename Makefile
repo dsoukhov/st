@@ -49,7 +49,8 @@ install: st
 	cp -f st-vimmode $(DESTDIR)$(PREFIX)/bin
 	cp -f st-plumber $(DESTDIR)$(PREFIX)/bin
 	cp -f st-vim.vim $(DESTDIR)$(PREFIX)
-	sed -i 's#\MK_PATH#$(DESTDIR)$(PREFIX)#g' $(DESTDIR)$(PREFIX)/bin/st-vimmode
+	sed -i 's#MK_PATH#$(DESTDIR)$(PREFIX)#g' $(DESTDIR)$(PREFIX)/bin/st-vimmode
+	sed -i 's#MK_PATH#$(DESTDIR)$(PREFIX)/bin#g' $(DESTDIR)$(PREFIX)/st-vim.vim
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-copyout
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/st-urlhandler
