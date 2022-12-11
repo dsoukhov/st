@@ -806,7 +806,7 @@ externalpipe(const Arg *arg)
   int fd[2];
   int y, m;
   char str[(term.col + 1) * UTF_SIZ];
-  char *ptr, c[100], b[100];
+  char *ptr;
   void (*psigpipe)(int);
   const Glyph *gp, *last;
   const ExternalPipe *ep = arg->v;
@@ -814,9 +814,10 @@ externalpipe(const Arg *arg)
   if (pipe(fd) == -1)
     die("pipe failed: %s\n", strerror(errno));
 
-  snprintf(c, 100, "PARENT_PWD=%s", pwd);
-  if (putenv(c) == -1)
-    die("putenv failed");
+  setenv("PARENT_PWD", pwd, 1);
+
+  if (ep->getsel)
+    setenv("PARENT_SEL", getsel(), 1);
 
   switch (fork()) {
   case -1:
@@ -833,11 +834,6 @@ externalpipe(const Arg *arg)
         die("dup2 failed: %s\n", strerror(errno));
     }
     close(fd[0]);
-    if (ep->getsel) {
-      snprintf(b, 100, "PARENT_SEL=%s", getsel());
-      if (putenv(b) == -1)
-        die("putenv failed");
-    }
     execvp(ep->cmd[0], ep->cmd);
     fprintf(stderr, "execvp %s failed: %s\n", ep->cmd[0],
         strerror(errno));
