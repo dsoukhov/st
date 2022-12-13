@@ -806,7 +806,7 @@ externalpipe(const Arg *arg)
   int fd[2];
   int y, m;
   char str[(term.col + 1) * UTF_SIZ];
-  char *ptr;
+  char *ptr, *s;
   void (*psigpipe)(int);
   const Glyph *gp, *last;
   const ExternalPipe *ep = arg->v;
@@ -814,10 +814,11 @@ externalpipe(const Arg *arg)
   if (pipe(fd) == -1)
     die("pipe failed: %s\n", strerror(errno));
 
-  setenv("PARENT_PWD", pwd, 1);
+  if (pwd)
+    setenv("PARENT_PWD", pwd, 1);
 
-  if (ep->getsel)
-    setenv("PARENT_SEL", getsel(), 1);
+  if (ep->getsel && (s = getsel()))
+    setenv("PARENT_SEL", s, 1);
 
   switch (fork()) {
   case -1:
