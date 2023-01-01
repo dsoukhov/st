@@ -1,7 +1,13 @@
 #!/bin/bash
 open() {
-  setsid xdg-open "$(sed 's/[[:blank:]]//g' <<< "$1")" >/dev/null 2>&1 &
+  pathescaped="$(printf "%b\n" "${1//%/\\x}")"
+  setsid xdg-open "$pathescaped" >/dev/null 2>&1 &
 }
+
+cleanup_sel() {
+  sed "s/^[[:space:]]*//;s/[[:space:]]*$//;s/^'//;s/^\"//;s/'$//;s/\"$//" <<< "$1"
+}
+
 urlregex="(((http|https|gopher|gemini|ftp|ftps|git)://|www\\.)[a-zA-Z0-9.]*[:]?[a-zA-Z0-9./@$&%?$\#=_~-]*)|((magnet:\\?xt=urn:btih:)[a-zA-Z0-9]*)"
 
 url="$(sed 's/.*│//g' <<< "$PARENT_SEL"| # First remove mutt sidebars:
@@ -10,4 +16,4 @@ url="$(sed 's/.*│//g' <<< "$PARENT_SEL"| # First remove mutt sidebars:
   sed "s/\(\.\|,\|;\|\!\\|\?\)$//;
   s/^www./http:\/\/www\./")" # xdg-open will not detect url without http
 
-[ -z $url ] && ( [[ -n $PARENT_SEL ]] && open "$PARENT_PWD/$PARENT_SEL") || open "$url"
+[ -z "$url" ] && ( [[ -n $PARENT_SEL ]] && open "$PARENT_PWD/$(cleanup_sel "$PARENT_SEL")") || open "$url"
