@@ -86,11 +86,11 @@ const int boxdraw_braille = 0;
 static int bellvolume = 0;
 
 /* default TERM value */
-char *termname = "st";
+char *termname = "st-256color";
 
 /* default class and name hints */
-static char *defaultclass = "st";
-static char *defaultname = "st";
+static char *defaultclass = "st-256color";
+static char *defaultname = "st-256color";
 
 /*
  * spaces per tab
