@@ -1,6 +1,9 @@
 #!/bin/bash
 open() {
-  pathescaped="$(printf "%b\n" "${1//%/\\x}")"
+  sel=$(cleanup_sel "$PARENT_SEL")
+  full="$PARENT_PWD/$sel"
+  [[ -f $sel ]] && pathescaped="$(printf "%b\n" "${sel//%/\\x}")" ||
+    pathescaped="$(printf "%b\n" "${full//%/\\x}")"
   setsid xdg-open "$pathescaped" >/dev/null 2>&1 &
 }
 
@@ -16,4 +19,4 @@ url="$(sed 's/.*│//g' <<< "$PARENT_SEL"| # First remove mutt sidebars:
   sed "s/\(\.\|,\|;\|\!\\|\?\)$//;
   s/^www./http:\/\/www\./")" # xdg-open will not detect url without http
 
-[ -z "$url" ] && ( [[ -n $PARENT_SEL ]] && open "$PARENT_PWD/$(cleanup_sel "$PARENT_SEL")") || open "$url"
+[ -z "$url" ] && ( [[ -n $PARENT_SEL ]] && open) || xdg-open "$url"
