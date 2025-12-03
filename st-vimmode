@@ -1,17 +1,13 @@
 #!/bin/bash
 
-parent="$(pgrep -lP $PPID | awk 'FNR == 1 {print $0}')"
-grandparent="$(pgrep -lP "$(awk 'FNR == 1 {print $1}' <<< "$parent")")"
-
-case "$(awk '{print $2}' <<< "$parent")" in
-  nvim|vim|vi|"$EDITOR")
-    exit ;;
-esac
-
-case "$(awk '{print $2}' <<< "$grandparent")" in
-  nvim|vim|vi|"$EDITOR")
-    exit ;;
-esac
+for (( d=0; d<=10; d++ )); do
+  [[ d -eq 0 ]] && p=$PPID || p=$(awk '{print $1}' <<< "$parent")
+  parent="$(pgrep -lP "$p" | awk 'FNR == 1 {print $0}')"
+  case "$(awk '{print $2}' <<< "$parent")" in
+    nvim|vim|vi|"$EDITOR")
+      exit ;;
+  esac
+done
 
 cd "$PARENT_PWD" || exit
 
