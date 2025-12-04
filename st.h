@@ -92,7 +92,7 @@ uint32_t bg;      /* background  */
 
 typedef Glyph *Line;
 
-typedef union {
+typedef struct{
 int i;
 uint ui;
 float f;

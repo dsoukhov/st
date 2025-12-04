@@ -810,6 +810,10 @@ externalpipe(const Arg *arg)
   void (*psigpipe)(int);
   const Glyph *gp, *last;
   const ExternalPipe *ep = arg->v;
+  int clear = arg->i;
+
+  if (clear)
+    selclear();
 
   if (pipe(fd) == -1)
     die("pipe failed: %s\n", strerror(errno));

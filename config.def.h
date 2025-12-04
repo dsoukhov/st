@@ -18,7 +18,7 @@ static int borderpx = 0;
  * 4: value of shell in /etc/passwd
  * 5: value of shell in config.h
  */
-static char *shell = "/bin/sh";
+static char *shell = "/bin/zsh";
 char *utmp = NULL;
 /* scroll program: to enable use a string like "scroll" */
 char *scroll = NULL;
@@ -241,10 +241,10 @@ static ExternalPipe plumbcmd = { .histlines = -1, .getsel = 1, .cmd = (char *con
  */
 static MouseShortcut mshortcuts[] = {
   /* mask                 button   function     argument             release */
-  { XK_ANY_MOD,           Button4, kscrollup,   {.i = 1},            0},
-  { XK_ANY_MOD,           Button5, kscrolldown, {.i = 1},            0},
-  { XK_ANY_MOD,           Button2, selpaste,    {.i = 0},            1},
-  { XK_ANY_MOD,           Button3, externalpipe,{.v = &plumbcmd},    1},
+  { XK_ANY_MOD,           Button4, kscrollup,   {.i = 1},                  0},
+  { XK_ANY_MOD,           Button5, kscrolldown, {.i = 1},                  0},
+  { XK_ANY_MOD,           Button2, selpaste,    {.i = 0},                  1},
+  { XK_ANY_MOD,           Button3, externalpipe,{.v = &plumbcmd, .i=0},    1},
   { ShiftMask,            Button4, ttysend,     {.s = "\033[5;2~"} },
   { XK_ANY_MOD,           Button4, ttysend,     {.s = "\031"} },
   { ShiftMask,            Button5, ttysend,     {.s = "\033[6;2~"} },
@@ -273,16 +273,16 @@ static Shortcut shortcuts[] = {
   { MODKEY,               XK_Down,        kscrolldown,    {.i =  1             } },
   { MODKEY,               XK_u,           kscrollup,      {.i =  1             } },
   { MODKEY,               XK_d,           kscrolldown,    {.i =  1             } },
-  { MODKEY,               XK_w,           externalpipe,   {.v =  &openurlcmd   } },
-  { TERMMOD,              XK_W,           externalpipe,   {.v =  &copyurlcmd   } },
-  { TERMMOD,              XK_O,           externalpipe,   {.v =  &copycmd      } },
-  { MODKEY,               XK_o,           externalpipe,   {.v =  &copyoutput   } },
-  { MODKEY,               XK_y,           externalpipe,   {.v =  &copycurcmd   } },
-  { MODKEY,               XK_bracketleft, externalpipe,   {.v =  &vimmodecmd   } },
-  { MODKEY,               XK_f,           externalpipe,   {.v =  &vimfindwrdcmd} },
-  { MODKEY,               XK_slash,       externalpipe,   {.v =  &vimsercmd    } },
-  { MODKEY,               XK_p,           externalpipe,   {.v =  &plumbcmd     } },
-  { MODKEY,               XK_apostrophe,  externalpipe,   {.v =  &vimlinecmd   } },
+  { MODKEY,               XK_w,           externalpipe,   {.v =  &openurlcmd,    .i=0} },
+  { TERMMOD,              XK_W,           externalpipe,   {.v =  &copyurlcmd,    .i=0} },
+  { TERMMOD,              XK_O,           externalpipe,   {.v =  &copycmd   ,    .i=0} },
+  { MODKEY,               XK_o,           externalpipe,   {.v =  &copyoutput,    .i=0} },
+  { MODKEY,               XK_y,           externalpipe,   {.v =  &copycurcmd,    .i=0} },
+  { MODKEY,               XK_bracketleft, externalpipe,   {.v =  &vimmodecmd,    .i=1} },
+  { MODKEY,               XK_f,           externalpipe,   {.v =  &vimfindwrdcmd, .i=1} },
+  { MODKEY,               XK_slash,       externalpipe,   {.v =  &vimsercmd,     .i=1} },
+  { MODKEY,               XK_p,           externalpipe,   {.v =  &plumbcmd,      .i=0} },
+  // { MODKEY,               XK_apostrophe,  externalpipe,   {.v =  &vimlinecmd, .i=1} },
   { MODKEY,               XK_bracketright,clippaste,      {.i =  0             } },
 };
 
