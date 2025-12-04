@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Exec=st -c st-editor -n st-editor -e zsh -c "$EDITOR %U"
+Icon=utilities-terminal
+Categories=Utility;TextEditor;
+
+Name=st-editor
+GenericName=Terminal file editor

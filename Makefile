@@ -63,6 +63,7 @@ install: st
 	@echo Please see the README file regarding the terminfo entry of st.
 	mkdir -p $(DESTDIR)$(APPPREFIX)
 	cp -f st.desktop $(DESTDIR)$(APPPREFIX)
+	cp -f st-editor.desktop $(DESTDIR)$(APPPREFIX)
 
 uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/bin/st
@@ -72,5 +73,6 @@ uninstall:
 	rm -f $(destdir)$(prefix)/bin/st-vimmode
 	rm -f $(DESTDIR)$(MANPREFIX)/man1/st.1
 	rm -f $(DESTDIR)$(APPPREFIX)/st.desktop
+	rm -f $(DESTDIR)$(APPPREFIX)/st-editor.desktop
 
 .PHONY: all options clean dist install uninstall
