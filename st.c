@@ -1358,7 +1358,8 @@ tscrolldown(int top, int n)
 void
 tscrollup(int top, int bot, int n, int mode)
 {
-  int i, j, s;
+  int i, j;
+  int s = 0;
   int alt = IS_SET(MODE_ALTSCREEN);
   int savehist = !alt && top == 0 && mode != SCROLL_NOSAVEHIST;
   Line temp;

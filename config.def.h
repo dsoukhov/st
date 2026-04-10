@@ -230,7 +230,7 @@ static ExternalPipe copyurlcmd = { .histlines = -1, .getsel = 0, .cmd = (char *c
 static ExternalPipe vimmodecmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-v", NULL } };
 static ExternalPipe vimfindwrdcmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-w", NULL } };
 static ExternalPipe vimsercmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-s", NULL } };
-static ExternalPipe vimlinecmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-l", NULL } };
+//static ExternalPipe vimlinecmd = { .histlines = -1, .getsel = 0, .cmd = (char *const[]){ "st-vimmode", "-l", NULL } };
 static ExternalPipe plumbcmd = { .histlines = -1, .getsel = 1, .cmd = (char *const[]){ "st-plumber", NULL } };
 
 /*
