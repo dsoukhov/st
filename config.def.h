@@ -259,9 +259,10 @@ static Shortcut shortcuts[] = {
   /* mask                 keysym          function        argument */
   { XK_ANY_MOD,           XK_Break,       sendbreak,      {.i =  0             } },
   { XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0             } },
-  { TERMMOD,              XK_Prior,       zoom,           {.f = +1             } },
-  { TERMMOD,              XK_Next,        zoom,           {.f = -1             } },
-  { TERMMOD,              XK_Home,        zoomreset,      {.f =  0             } },
+  { TERMMOD,              XK_plus,        zoom,           {.f = +1             } },
+  { MODKEY,               XK_minus,       zoom,           {.f = -1             } },
+  { TERMMOD,              XK_underscore,  zoom,           {.f = -1             } },
+  { MODKEY,               XK_equal,       zoomreset,      {.f =  0             } },
   { MODKEY,               XK_c,           clipcopy,       {.i =  0             } },
   { MODKEY,               XK_v,           clippaste,      {.i =  0             } },
   { MODKEY,               XK_Num_Lock,    numlock,        {.i =  0             } },
